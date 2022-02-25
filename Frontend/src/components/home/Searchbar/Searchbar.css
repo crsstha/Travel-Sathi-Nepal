@@ -1,0 +1,37 @@
+.form-container form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  bottom: 0.5rem;
+  position: relative;
+  background: white;
+  padding: 20px;
+  text-align: left;
+  border-radius: 0.5rem;
+}
+.input-box {
+  flex: 1 1 7rem;
+  display: flex;
+  flex-direction: column;
+}
+.input-box span {
+  font-weight: 500;
+}
+.input-box input {
+  padding: 7px;
+  outline: none;
+  border: none;
+  background: #eeeff1;
+  border-radius: 1rem;
+}
+.form-container form .btn {
+  flex: 1 1 7rem;
+  padding: 10px 34px;
+  border: none;
+  border-radius: 0.5rem;
+  background: #474fa0;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+}

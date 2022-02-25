@@ -1,0 +1,77 @@
+.reg-center {
+  margin: 30px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+.reg-center p {
+  margin: 10px;
+  color: red;
+}
+.bg-2 {
+  position: relative;
+  z-index: -1;
+  margin: 50px auto;
+  margin-top: 0px;
+  padding: 30px 80px;
+  animation: login 800ms ease-in-out forwards;
+  transform-origin: right;
+}
+.reg-form {
+  max-width: 600px;
+  border-radius: 10px;
+  margin: 50px auto;
+  padding: 30px 40px;
+  box-shadow: 20px 20px 80px rgb(206, 206, 206);
+  background-color: whitesmoke;
+  animation: reg 800ms ease-in-out forwards;
+  transform-origin: top center;
+}
+.reg-form h1 {
+  font-family: "Kaushan Script", cursive;
+  color: #400485;
+  font-style: italic;
+  text-align: center;
+  padding-bottom: 10px;
+}
+.form-inputs {
+  margin: 20px;
+}
+
+@keyframes reg {
+  0% {
+    transform: rotateX(-90deg);
+  }
+  70% {
+    transform: rotateX(20deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+.col-md-6 p {
+  color: red;
+}
+.reg-center .btn-outline-success,
+.new .btn-outline-success {
+  width: 100%;
+  font-size: 20px;
+}
+.reg-center .btn-success {
+  margin-top: 20px;
+  font-size: 20px;
+  width: 100%;
+}
+.signup {
+  max-width: 600px;
+  border-radius: 10px;
+  margin: 50px auto;
+  padding: 30px 40px;
+  box-shadow: 20px 20px 80px rgb(206, 206, 206);
+  background-color: whitesmoke;
+  animation: reg 800ms ease-in-out forwards;
+  transform-origin: top center;
+}
+.signup h1 {
+  font-size: 30px;
+  padding-bottom: 10px;
+  text-align: center;
+}

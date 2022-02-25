@@ -1,0 +1,140 @@
+.navbar {
+  width: 100%;
+  height: 80px;
+  display: grid;
+  grid-template-columns: 7rem 1fr 2fr 1fr 10rem;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+}
+.navbar img {
+  height: 50px;
+}
+.nav-list ul {
+  padding-top: 15px;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.navbar-header {
+  display: grid;
+  grid-column: 2/3;
+  justify-content: start;
+  align-items: center;
+}
+.navbar-profile {
+  display: flex;
+  justify-content: right;
+}
+
+.menu-container {
+  position: relative;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+
+.menu-trigger {
+  background: #ffffff;
+  border-radius: 90px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  border: none;
+  vertical-align: middle;
+  transition: box-shadow 0.4s ease;
+  margin-left: auto; /* Strictly for positioning */
+}
+
+.menu-trigger:hover {
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+}
+
+.menu-trigger span {
+  font-weight: 700;
+  vertical-align: middle;
+  font-size: 14px;
+  margin: 0 10px;
+}
+
+.menu-trigger img {
+  border-radius: 90px;
+}
+.menu {
+  background: #ffffff;
+  border-radius: 8px;
+  position: absolute;
+  top: 60px;
+  right: 0;
+  width: 300px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-20px);
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+}
+
+.menu.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  height: fit-content;
+}
+
+.menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu li {
+  border-bottom: 1px solid #dddddd;
+  height: 35px;
+  padding: 5px;
+}
+
+.menu li Link {
+  text-decoration: none;
+  color: #333333;
+  padding: 15px 20px;
+  display: block;
+}
+.btn-1 {
+  border: none;
+  outline: none;
+  position: relative;
+  z-index: 1;
+  color: black;
+}
+.btn-1:hover {
+  color: orange;
+}
+.btn-1::before {
+  content: "";
+  transition: 0.6s all ease;
+  position: absolute;
+  width: 0%;
+  bottom: -4px;
+  opacity: 70% !important;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    rgba(63, 94, 251, 1) 0%,
+    rgba(252, 70, 107, 1) 100%
+  );
+}
+.login {
+  text-align: right;
+}
+.btn-1:hover::before {
+  width: 100%;
+}
+@media (max-width: 1080px) {
+  .navbar {
+    height: 40px;
+    grid-template-columns: 2rem 3fr 1fr 2rem;
+  }
+}

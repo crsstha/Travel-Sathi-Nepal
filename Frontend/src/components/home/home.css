@@ -1,0 +1,19 @@
+.hero-section img {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  z-index: -1;
+  margin: 20px;
+}
+.hero-section {
+  padding: 10px;
+  display: flex;
+  height: calc(100vh - 70px);
+}
+.col-xl-6 {
+  margin: auto;
+  width: 50%;
+  padding-top: 30px;
+  align-content: center;
+  text-align: left;
+}
