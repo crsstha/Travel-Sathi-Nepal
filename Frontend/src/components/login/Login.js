@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
 import bak from "../img/back2.png";
 
-export default function Login() {
+export default function Login(props) {
   const initialValues = { email: "", password: "" };
   const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setFormErrors] = useState({});
@@ -16,29 +16,6 @@ export default function Login() {
     setFormValues({ ...formValues, [name]: value });
   };
 
-  const handleUser = async (e) => {
-    const response = await fetch("http://localhost:5000/user/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: formValues.email,
-        password: formValues.password,
-      }),
-    });
-    const jsons = await response.json();
-    console.log(jsons);
-    if (jsons.sucess) {
-      localStorage.setItem("token", jsons.authtoken);
-      history("/");
-      console.log("Login Sucessful");
-    } else {
-      Login(formValues);
-      console.log("Login Unsucessful");
-    }
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setFormErrors(validate(formValues));
@@ -48,6 +25,37 @@ export default function Login() {
   useEffect(() => {
     console.log(formErrors);
     if (Object.keys(formErrors).length === 0 && isSubmit) {
+      const handleUser = async (e) => {
+        try {
+          const response = await fetch(
+            "http://localhost:5000/user/auth/login",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email: formValues.email,
+                password: formValues.password,
+              }),
+            }
+          );
+          const jsons = await response.json();
+          console.log(jsons);
+          if (jsons.sucess) {
+            localStorage.setItem("token", jsons.authtoken);
+            history("/");
+            console.log("Login Sucessful");
+            props.showAlert("Login sucessful", "success");
+          } else {
+            console.log("Login Unsucess");
+            props.showAlert(
+              "Login unsucessful! Please Check You email and Password",
+              "danger"
+            );
+          }
+        } catch (error) {}
+      };
       handleUser();
     }
   }, [formErrors]);
@@ -64,6 +72,7 @@ export default function Login() {
     } else if (values.password.length < 6) {
       errors.password = "Password must be more than 6 characters";
     }
+
     return errors;
   };
   return (
@@ -96,7 +105,7 @@ export default function Login() {
             <label htmlFor="floatingPassword">Password</label>
           </div>
           <span className="error">{formErrors.password}</span>
-          <Link to="#" className="pass">
+          <Link to="/forgotpassword" className="pass">
             Forget Password?
           </Link>
           <button type="submit" className="btn btn-success btn-lg btn-block">

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Register.css";
 import bak from "../img/back3.png";
 
-export default function Register() {
+export default function Register(props) {
   const [values, setValues] = useState({
     firstName: "",
     lastName: "",
@@ -26,7 +26,7 @@ export default function Register() {
   };
 
   const handleUser = async (e) => {
-    const response = await fetch("http://localhost:5000/user/auth/createUser", {
+    const response = await fetch("http://localhost:5000/user/auth/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -48,8 +48,12 @@ export default function Register() {
       localStorage.setItem("token", jsons.authtoken);
       history("/login");
       console.log("Registeration Sucessful");
+      props.showAlert("Registeration Successful", "success");
     } else {
-      console.log("Registeration unsucessful");
+      props.showAlert(
+        "Registeration Unsuccessful ! Please Check Your Details",
+        "danger"
+      );
     }
   };
 

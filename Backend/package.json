@@ -2,14 +2,16 @@
   "name": "tsn_backend",
   "version": "1.0.0",
   "description": "Travel Sathi Nepal -Server",
-  "main": "index.js",
+  "main": "Backend/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "node Backend/index.js",
+    "dev": "nodemon Backend/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cloudinary": "^1.28.1",
     "express": "^4.17.3",
     "mongoose": "^6.2.3"
   },

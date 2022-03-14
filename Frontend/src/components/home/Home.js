@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./home.css";
 import { Link } from "react-router-dom";
 import back from "../img/baackground1.png";
 import Searchbar from "./Searchbar/Searchbar";
-import Find from "./find/Find";
-import Pop from "../Pop";
+import { useSelector, useDispatch } from "react-redux";
+import { clearErrors, getVehicle } from "../../Redux/actions/vehicleAction";
+import VehicleCard from "./VehicleCard";
 
 export default function Home() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getVehicle());
+  }, [dispatch]);
   return (
     <div className="hero-section">
       <div className="container">
@@ -35,9 +41,9 @@ export default function Home() {
         <div className="row">
           <div className="col-xl-9">
             <Searchbar />
-            <Pop />
           </div>
         </div>
+        <h2 className="homeHeading">Featured Products</h2>
       </div>
     </div>
   );
