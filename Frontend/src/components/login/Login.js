@@ -1,64 +1,46 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
 import bak from "../img/back2.png";
+import { useAlert } from "react-alert";
+import { useDispatch, useSelector } from "react-redux";
+import { clearErrors, login } from "../../Redux/actions/userAction";
+import Loader from "../Loader/Loader";
 
-export default function Login(props) {
+export default function Login() {
   const initialValues = { email: "", password: "" };
   const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setFormErrors] = useState({});
-  const [isSubmit, setIsSubmit] = useState(false);
-  let history = useNavigate();
+  const history = useNavigate();
+  const alert = useAlert();
+  const dispatch = useDispatch();
 
+  const { error, loading, isAuthenticated } = useSelector(
+    (state) => state.userDetails
+  );
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setFormErrors(validate(formValues));
-    setIsSubmit(true);
+    dispatch(login(formValues.email, formValues.password));
+    
   };
-
   useEffect(() => {
-    console.log(formErrors);
-    if (Object.keys(formErrors).length === 0 && isSubmit) {
-      const handleUser = async (e) => {
-        try {
-          const response = await fetch(
-            "http://localhost:5000/user/auth/login",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                email: formValues.email,
-                password: formValues.password,
-              }),
-            }
-          );
-          const jsons = await response.json();
-          console.log(jsons);
-          if (jsons.sucess) {
-            localStorage.setItem("token", jsons.authtoken);
-            history("/");
-            console.log("Login Sucessful");
-            props.showAlert("Login sucessful", "success");
-          } else {
-            console.log("Login Unsucess");
-            props.showAlert(
-              "Login unsucessful! Please Check You email and Password",
-              "danger"
-            );
-          }
-        } catch (error) {}
-      };
-      handleUser();
+    if (error) {
+      alert.error("Invlid Email Or Password");
+      dispatch(clearErrors());
     }
-  }, [formErrors]);
+    if (isAuthenticated) {
+      alert.show("Login Sucessfully",{type: 'success'});
+      history("/");
+      
+    }
+  }, [dispatch, error, alert, history, isAuthenticated]);
+
   const validate = (values) => {
     const errors = {};
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
@@ -76,52 +58,63 @@ export default function Login(props) {
     return errors;
   };
   return (
-    <div className="login">
-      <img className="bg-1" src={bak} alt="background" />
-      <form onSubmit={handleSubmit}>
-        <div className="form-inner">
-          <h2 className="hed">LOGIN</h2>
-          <div className="form-floating mb-3">
-            <input
-              type="text"
-              name="email"
-              className="form-control"
-              placeholder="Email"
-              value={formValues.email}
-              onChange={handleChange}
-            />
-            <label htmlFor="floatingInput">Email Address</label>
+    <Fragment>
+      {loading ? (
+        <Loader />
+      ) : (
+        <Fragment>
+          <div className="login">
+            <img className="bg-1" src={bak} alt="background" />
+            <form onSubmit={handleSubmit}>
+              <div className="form-inner">
+                <h2 className="hed">LOGIN</h2>
+                <div className="form-floating mb-3">
+                  <input
+                    type="text"
+                    name="email"
+                    className="form-control"
+                    placeholder="Email"
+                    value={formValues.email}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="floatingInput">Email Address</label>
+                </div>
+                <span className="error">{formErrors.email}</span>
+                <div className="form-floating">
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    className="form-control"
+                    value={formValues.password}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="floatingPassword">Password</label>
+                </div>
+                <span className="error">{formErrors.password}</span>
+                <Link to="/forgotpassword" className="pass">
+                  Forget Password?
+                </Link>
+                <button
+                  type="submit"
+                  className="btn btn-success btn-lg btn-block"
+                >
+                  Login
+                </button>
+              </div>
+            </form>
+            <div className="new">
+              <h1> Don't have an Travel Sathi Nepal Account?</h1>
+              <Link
+                to="/Register"
+                className="btn btn-outline-success btn-lg btn-block"
+              >
+                Create Account
+              </Link>
+            </div>
           </div>
-          <span className="error">{formErrors.email}</span>
-          <div className="form-floating">
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              className="form-control"
-              value={formValues.password}
-              onChange={handleChange}
-            />
-            <label htmlFor="floatingPassword">Password</label>
-          </div>
-          <span className="error">{formErrors.password}</span>
-          <Link to="/forgotpassword" className="pass">
-            Forget Password?
-          </Link>
-          <button type="submit" className="btn btn-success btn-lg btn-block">
-            Login
-          </button>
-        </div>
-      </form>
-      <div className="new">
-        <h1> Don't have an Travel Sathi Nepal Account?</h1>
-        <Link
-          to="/Register"
-          className="btn btn-outline-success btn-lg btn-block"
-        >
-          Create Account
-        </Link>
-      </div>
-    </div>
+        </Fragment>
+      )}
+    </Fragment>
   );
 }

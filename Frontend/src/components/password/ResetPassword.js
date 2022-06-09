@@ -2,13 +2,14 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import bak from "../img/back2.png";
+import { useAlert } from "react-alert";
 
-export default function ResetPassword(props, match) {
+export default function ResetPassword(props) {
   const [formValues, setEmail] = useState({ password: "", cpassword: "" });
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   let history = useNavigate();
-
+  const alert = useAlert();
   const { Token } = useParams();
 
   const handleChange = (e) => {
@@ -28,7 +29,7 @@ export default function ResetPassword(props, match) {
       const handleUser = async (e) => {
         try {
           const response = await fetch(
-            `http://localhost:5000/user/auth/passwordreset/${Token}`,
+            `/user/auth/passwordreset/${Token}`,
             {
               method: "put",
               headers: {
@@ -44,10 +45,10 @@ export default function ResetPassword(props, match) {
           if (jsons.success) {
             history("/login");
             console.log("New Password has been Set");
-            props.showAlert("New Password has been Set", "success");
+            alert.success("New Password has been Set");
           } else {
             console.log("Email Sent Unsucessfully");
-            props.showAlert(" Unsucessfully! Try Again.", "danger");
+            alert.error(" Unsucessfully! Try Again.");
           }
         } catch (error) {}
       };

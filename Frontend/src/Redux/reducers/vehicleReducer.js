@@ -27,10 +27,10 @@ import {
   ALL_REVIEW_REQUEST,
   ALL_REVIEW_SUCCESS,
   ALL_REVIEW_FAIL,
-  DELETE_REVIEW_REQUEST,
-  DELETE_REVIEW_SUCCESS,
-  DELETE_REVIEW_FAIL,
-  DELETE_REVIEW_RESET,
+  // DELETE_REVIEW_REQUEST,
+  // DELETE_REVIEW_SUCCESS,
+  // DELETE_REVIEW_FAIL,
+  // DELETE_REVIEW_RESET,
   CLEAR_ERRORS,
 } from "../constants/vehicleConstants";
 
@@ -48,12 +48,12 @@ export const vehiclesReducer = (state = { vehicles: [] }, action) => {
         vehicles: action.payload.vehicles,
         vehiclesCount: action.payload.vehiclesCount,
         resultPerPage: action.payload.resultPerPage,
-        filteredvehiclesCount: action.payload.filteredVEHICLEsCount,
+        filteredVehiclesCount: action.payload.filteredVehiclesCount,
       };
     case HOST_VEHICLE_SUCCESS:
       return {
         loading: false,
-        VEHICLEs: action.payload,
+        vehicles: action.payload,
       };
     case ALL_VEHICLE_FAIL:
     case HOST_VEHICLE_FAIL:
@@ -70,31 +70,24 @@ export const vehiclesReducer = (state = { vehicles: [] }, action) => {
       return state;
   }
 };
-
-export const newVEHICLEReducer = (state = { VEHICLE: {} }, action) => {
+export const vehicleDetailsReducer = (state = { vehicle: {} }, action) => {
   switch (action.type) {
-    case NEW_VEHICLE_REQUEST:
+    case VEHICLE_DETAILS_REQUEST:
       return {
-        ...state,
         loading: true,
+        ...state,
       };
-    case NEW_VEHICLE_SUCCESS:
+    case VEHICLE_DETAILS_SUCCESS:
       return {
         loading: false,
-        success: action.payload.success,
-        VEHICLE: action.payload.VEHICLE,
+        vehicle: action.payload.Vehicle,
       };
-    case NEW_VEHICLE_FAIL:
+    case VEHICLE_DETAILS_FAIL:
       return {
-        ...state,
         loading: false,
         error: action.payload,
       };
-    case NEW_VEHICLE_RESET:
-      return {
-        ...state,
-        success: false,
-      };
+
     case CLEAR_ERRORS:
       return {
         ...state,
@@ -104,8 +97,7 @@ export const newVEHICLEReducer = (state = { VEHICLE: {} }, action) => {
       return state;
   }
 };
-
-export const VEHICLEReducer = (state = {}, action) => {
+export const vehicleReducer = (state = {}, action) => {
   switch (action.type) {
     case DELETE_VEHICLE_REQUEST:
     case UPDATE_VEHICLE_REQUEST:
@@ -152,21 +144,21 @@ export const VEHICLEReducer = (state = {}, action) => {
       return state;
   }
 };
-
-export const VEHICLEDetailsReducer = (state = { VEHICLE: {} }, action) => {
+export const vehicleReviewsReducer = (state = { reviews: [] }, action) => {
   switch (action.type) {
-    case VEHICLE_DETAILS_REQUEST:
+    case ALL_REVIEW_REQUEST:
       return {
-        loading: true,
         ...state,
+        loading: true,
       };
-    case VEHICLE_DETAILS_SUCCESS:
+    case ALL_REVIEW_SUCCESS:
       return {
         loading: false,
-        VEHICLE: action.payload,
+        reviews: action.payload,
       };
-    case VEHICLE_DETAILS_FAIL:
+    case ALL_REVIEW_FAIL:
       return {
+        ...state,
         loading: false,
         error: action.payload,
       };
@@ -180,7 +172,39 @@ export const VEHICLEDetailsReducer = (state = { VEHICLE: {} }, action) => {
       return state;
   }
 };
-
+export const newVehicleReducer = (state = { vehicle: {} }, action) => {
+  switch (action.type) {
+    case NEW_VEHICLE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case NEW_VEHICLE_SUCCESS:
+      return {
+        loading: false,
+        success: action.payload.success,
+        vehicle: action.payload.vehicle,
+      };
+    case NEW_VEHICLE_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case NEW_VEHICLE_RESET:
+      return {
+        ...state,
+        success: false,
+      };
+    case CLEAR_ERRORS:
+      return {
+        ...state,
+        error: null,
+      };
+    default:
+      return state;
+  }
+};
 export const newReviewReducer = (state = {}, action) => {
   switch (action.type) {
     case NEW_REVIEW_REQUEST:
@@ -214,65 +238,36 @@ export const newReviewReducer = (state = {}, action) => {
   }
 };
 
-export const VEHICLEReviewsReducer = (state = { reviews: [] }, action) => {
-  switch (action.type) {
-    case ALL_REVIEW_REQUEST:
-      return {
-        ...state,
-        loading: true,
-      };
-    case ALL_REVIEW_SUCCESS:
-      return {
-        loading: false,
-        reviews: action.payload,
-      };
-    case ALL_REVIEW_FAIL:
-      return {
-        ...state,
-        loading: false,
-        error: action.payload,
-      };
-
-    case CLEAR_ERRORS:
-      return {
-        ...state,
-        error: null,
-      };
-    default:
-      return state;
-  }
-};
-
-export const reviewReducer = (state = {}, action) => {
-  switch (action.type) {
-    case DELETE_REVIEW_REQUEST:
-      return {
-        ...state,
-        loading: true,
-      };
-    case DELETE_REVIEW_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        isDeleted: action.payload,
-      };
-    case DELETE_REVIEW_FAIL:
-      return {
-        ...state,
-        loading: false,
-        error: action.payload,
-      };
-    case DELETE_REVIEW_RESET:
-      return {
-        ...state,
-        isDeleted: false,
-      };
-    case CLEAR_ERRORS:
-      return {
-        ...state,
-        error: null,
-      };
-    default:
-      return state;
-  }
-};
+// export const reviewReducer = (state = {}, action) => {
+//   switch (action.type) {
+//     case DELETE_REVIEW_REQUEST:
+//       return {
+//         ...state,
+//         loading: true,
+//       };
+//     case DELETE_REVIEW_SUCCESS:
+//       return {
+//         ...state,
+//         loading: false,
+//         isDeleted: action.payload,
+//       };
+//     case DELETE_REVIEW_FAIL:
+//       return {
+//         ...state,
+//         loading: false,
+//         error: action.payload,
+//       };
+//     case DELETE_REVIEW_RESET:
+//       return {
+//         ...state,
+//         isDeleted: false,
+//       };
+//     case CLEAR_ERRORS:
+//       return {
+//         ...state,
+//         error: null,
+//       };
+//     default:
+//       return state;
+//   }
+// };

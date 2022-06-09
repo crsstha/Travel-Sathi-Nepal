@@ -2,12 +2,13 @@ import React from "react";
 import { useState, useEffect } from "react";
 import bak from "../img/back2.png";
 import "./ForgetPassword.css";
+import { useAlert } from "react-alert";
 
-export default function ForgetPassword(props) {
+export default function ForgetPassword() {
   const [formValues, setEmail] = useState({ email: "" });
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
-
+  const alert = useAlert();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEmail({ ...formValues, [name]: value });
@@ -25,7 +26,7 @@ export default function ForgetPassword(props) {
       const handleUser = async (e) => {
         try {
           const response = await fetch(
-            "http://localhost:5000/user/auth/forgotpassword",
+            "/user/auth/forgotpassword",
             {
               method: "POST",
               headers: {
@@ -41,15 +42,13 @@ export default function ForgetPassword(props) {
 
           if (jsons.success) {
             console.log("Email Sent Sucessfully");
-            props.showAlert(
-              "Email Sent Sucessfully , Please Check your Email",
-              "success"
+            alert.success(
+              "Email Sent Sucessfully , Please Check your Email"
             );
           } else {
             console.log("Email Sent Sucessfully");
-            props.showAlert(
-              "Email Sent unsucessfully! Please Check You email.",
-              "danger"
+            alert.error(
+              "Email Sent unsucessfully! Please Check You email."
             );
           }
         } catch (error) {}

@@ -2,20 +2,34 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Register.css";
 import bak from "../img/back3.png";
+import pro from "../img/Profile.png";
+import { clearErrors, register } from "../../Redux/actions/userAction";
+import { useDispatch, useSelector } from "react-redux";
+import { useAlert } from "react-alert";
 
-export default function Register(props) {
+export default function Register() {
+  const dispatch = useDispatch();
+  const alert = useAlert();
+  const history = useNavigate();
+  const { error, isAuthenticated } = useSelector(
+    (state) => state.userDetails
+  )
   const [values, setValues] = useState({
     firstName: "",
     lastName: "",
     dob: "",
     username: "",
     email: "",
+    phone:"",
     password: "",
     password2: "",
   });
-  let history = useNavigate();
+  
   const [formErrors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [avatar, setAvatar] = useState();
+  const [avatarPreview, setAvatarPreview] = useState(pro);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,51 +38,92 @@ export default function Register(props) {
       [name]: value,
     });
   };
+  const registerDataChange = (e) => {
+    if (e.target.name === "avatar") {
+      const reader = new FileReader();
 
-  const handleUser = async (e) => {
-    const response = await fetch("http://localhost:5000/user/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        firstName: values.firstName,
-        lastName: values.lastName,
-        dob: values.dob,
-        username: values.username,
-        email: values.email,
-        password: values.password2,
-        password2: values.password2,
-      }),
-    });
-    const jsons = await response.json();
-    console.log(values);
-    console.log(jsons);
-    if (jsons.sucess) {
-      localStorage.setItem("token", jsons.authtoken);
-      history("/login");
-      console.log("Registeration Sucessful");
-      props.showAlert("Registeration Successful", "success");
+      reader.onload = () => {
+        if (reader.readyState === 2) {
+          setAvatarPreview(reader.result);
+          setAvatar(reader.result);
+        }
+      };
+
+      reader.readAsDataURL(e.target.files[0]);
     } else {
-      props.showAlert(
-        "Registeration Unsuccessful ! Please Check Your Details",
-        "danger"
-      );
+      setValues({ ...values, [e.target.name]: e.target.value });
     }
   };
-
+  // const handleUser = async (e) => {
+  //   const response = await fetch("http://localhost:5000/user/auth/register", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       firstName: values.firstName,
+  //       lastName: values.lastName,
+  //       dob: values.dob,
+  //       username: values.username,
+  //       phone:values.phone,
+  //       email: values.email,
+  //       password: values.password2,
+  //       password2: values.password2,
+  //       avatar:avatar
+  //     }),
+  //   });
+  //   const jsons = await response.json();
+  //   console.log(values);
+  //   console.log(jsons);
+  //   if (jsons.sucess) {
+  //     localStorage.setItem("token", jsons.authtoken);
+  //     history("/login");
+  //     console.log("Registeration Sucessful");
+  //     props.showAlert("Registeration Successful", "success");
+  //   } else {
+  //     props.showAlert(
+  //       "Registeration Unsuccessful ! Please Check Your Details",
+  //       "danger"
+  //     );
+  //   }
+  // };
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors(validate(values));
     setIsSubmitting(true);
-  };
 
+    const myForm = new FormData();
+
+    myForm.set("firstName", values.firstName);
+    myForm.set("lastName", values.lastName);
+    myForm.set("dob", values.dob);
+    myForm.set("email", values.email);
+    myForm.set("password", values.password);
+    myForm.set("password2", values.password2);
+    myForm.set("phone", values.phone);
+    myForm.set("username", values.username);
+    myForm.set("avatar", avatar);
+
+    dispatch(register(myForm));
+  };
   useEffect(() => {
-    console.log(formErrors);
-    if (Object.keys(formErrors).length === 0 && isSubmitting) {
-      handleUser();
+    if (error) {
+      alert.error(error);
+      dispatch(clearErrors());
     }
-  }, [formErrors]);
+
+    if (isAuthenticated) {
+      history("/");
+      alert.success("Registration Successful")
+    }
+  }, [dispatch, error, alert, history, isAuthenticated]);
+  // useEffect(() => {
+
+  //   // console.log(formErrors);
+  //   // if (Object.keys(formErrors).length === 0 && isSubmitting) {
+  //   //   handleUser();
+  //   // }
+  // }, [formErrors]);
 
   const validate = (values) => {
     const errors = {};
@@ -86,6 +141,9 @@ export default function Register(props) {
 
     if (!values.username.trim()) {
       errors.username = "*Username requried!";
+    }
+    if (!values.phone.trim()) {
+      errors.phone = "*Phone Number requried!";
     }
 
     if (!values.email) {
@@ -195,6 +253,21 @@ export default function Register(props) {
             </div>
             <div className="form-floating mb-3">
               <input
+                type="text"
+                id="phone"
+                name="phone"
+                className="form-control"
+                placeholder="Enter your Phone Number"
+                value={values.phone}
+                onChange={handleChange}
+              />
+              <label htmlFor="username" className="form-label">
+               Phone number
+              </label>
+              {formErrors.phone && <p>{formErrors.phone}</p>}
+            </div>
+            <div className="form-floating mb-3">
+              <input
                 type="password"
                 id="password"
                 name="password"
@@ -223,6 +296,15 @@ export default function Register(props) {
               </label>
               {formErrors.password2 && <p>{formErrors.password2}</p>}
             </div>
+            <div className=" form-floating mb-3" id="registerImage">
+                  <img src={avatarPreview} alt="Avatar Preview" />
+                  <input
+                    type="file"
+                    name="avatar"
+                    accept="image/*"
+                    onChange={registerDataChange}
+                  />
+                </div>
             <div className="col-12">
               <button type="submit" className="btn btn-success">
                 Sign Up

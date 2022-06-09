@@ -2,19 +2,42 @@ const vehicle = require("../models/Vehicle");
 const ErrorHander = require("../utils/errorhander");
 const ApiFeatures = require("../utils/apifeatures");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
+const cloudinary = require("cloudinary");
 
 //Create a Vechicle
-exports.addVehicle = async (req, res) => {
-  try {
-    const Vechicle = await vehicle.create(req.body);
-    res.status(201).json({
-      success: true,
-      Vechicle,
-    });
-  } catch (err) {
-    res.status(500).json(err);
+exports.addVehicle = catchAsyncErrors(async (req, res) => {
+  let images = [];
+
+  if (typeof req.body.images === "string") {
+    images.push(req.body.images);
+  } else {
+    images = req.body.images;
   }
-};
+
+  const imagesLinks = [];
+
+  for (let i = 0; i < images.length; i++) {
+    const result = await cloudinary.v2.uploader.upload(images[i], {
+      folder: "vehicles",
+      extended: true,
+      limit: "50mb",
+    });
+
+    imagesLinks.push({
+      public_id: result.public_id,
+      url: result.secure_url,
+    });
+  }
+  req.body.images = imagesLinks;
+
+  req.body.host = req.user.id;
+
+  const Vehicle = await vehicle.create(req.body);
+  res.status(201).json({
+    success: true,
+    Vehicle,
+  });
+});
 
 exports.getAllVehicle = async (req, res, next) => {
   const resultPerPage = 8;
@@ -31,10 +54,11 @@ exports.getAllVehicle = async (req, res, next) => {
 
     apiFeature.pagination(resultPerPage);
 
-    console.log("hello");
+    // vehicles = await apiFeature.query;
+
     res.status(200).json({
-      vehicles,
       success: true,
+      vehicles,
       vehiclesCount,
       resultPerPage,
       filteredVehiclesCount,
@@ -44,8 +68,16 @@ exports.getAllVehicle = async (req, res, next) => {
   }
 };
 
-exports.getHostVehicles = async (req, res, next) => {
+exports.getAdminVehicles = async (req, res, next) => {
   const vehicles = await vehicle.find();
+  res.status(200).json({
+    success: true,
+    vehicles,
+  });
+};
+
+exports.getHostVehicles = async (req, res, next) => {
+  const vehicles = await vehicle.find({ host: req.user.id });
   res.status(200).json({
     success: true,
     vehicles,
@@ -54,9 +86,12 @@ exports.getHostVehicles = async (req, res, next) => {
 
 // Get vehicle Details
 exports.getvehicleDetails = catchAsyncErrors(async (req, res, next) => {
-  const Vehicle = await vehicle.findById(req.params.id);
+  const Vehicle = await vehicle
+    .findById(req.params.id)
+    .populate("host", "firstName lastName createdAt avatar")
+    .populate("reviews.user", "avatar");
   if (!Vehicle) {
-    return next(new ErrorHander("Product not found", 404));
+    return next(new ErrorHander("Vehicle not found", 404));
   }
 
   res.status(200).json({
@@ -69,8 +104,39 @@ exports.getvehicleDetails = catchAsyncErrors(async (req, res, next) => {
 exports.updateVehicle = catchAsyncErrors(async (req, res, next) => {
   let Vehicle = await vehicle.findById(req.params.id);
   if (!Vehicle) {
-    return next(new ErrorHander("Product not found", 404));
+    return next(new ErrorHander("Vehicle not found", 404));
   }
+  // Images Start Here
+  let images = [];
+
+  if (typeof req.body.images === "string") {
+    images.push(req.body.images);
+  } else {
+    images = req.body.images;
+  }
+
+  if (images !== undefined) {
+    // Deleting Images From Cloudinary
+    for (let i = 0; i < Vehicle.images.length; i++) {
+      await cloudinary.v2.uploader.destroy(Vehicle.images[i].public_id);
+    }
+
+    const imagesLinks = [];
+
+    for (let i = 0; i < images.length; i++) {
+      const result = await cloudinary.v2.uploader.upload(images[i], {
+        folder: "vehicles",
+      });
+
+      imagesLinks.push({
+        public_id: result.public_id,
+        url: result.secure_url,
+      });
+    }
+
+    req.body.images = imagesLinks;
+  }
+
   Vehicle = await vehicle.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
@@ -105,11 +171,11 @@ exports.createVehicleReview = catchAsyncErrors(async (req, res, next) => {
 
   const review = {
     user: req.user._id,
-    name: req.user.name,
+    name: req.user.firstName,
     rating: Number(rating),
     comment,
   };
-  console.log(req.user._id);
+
   const Vehicle = await vehicle.findById(vehicleId);
 
   const isReviewed = Vehicle.reviews.find(
@@ -135,9 +201,10 @@ exports.createVehicleReview = catchAsyncErrors(async (req, res, next) => {
   Vehicle.ratings = avg / Vehicle.reviews.length;
 
   await Vehicle.save({ validateBeforeSave: false });
-
+  console.log(Vehicle);
   res.status(200).json({
     success: true,
+    review,
   });
 });
 
@@ -146,7 +213,7 @@ exports.getVehicleReviews = catchAsyncErrors(async (req, res, next) => {
   const Vehicle = await vehicle.findById(req.query.id);
 
   if (!Vehicle) {
-    return next(new ErrorHander("Product not found", 404));
+    return next(new ErrorHander("Vehicle not found", 404));
   }
 
   res.status(200).json({

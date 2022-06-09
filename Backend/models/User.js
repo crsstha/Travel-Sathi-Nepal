@@ -28,7 +28,7 @@ const userSchema = new Schema(
     },
     username: {
       type: String,
-      required: true,
+      required: [true, "Please Provide Username"],
       unique: true,
       minlength: 4,
     },
@@ -37,9 +37,38 @@ const userSchema = new Schema(
       required: true,
       minlength: 6,
     },
+    about: {
+      type: String,
+      minlength: 4,
+    },
+    phone:{
+      type: Number,
+      required:[true, "Please Provide Phone Number"],
+      minlength: 10,
+    },
     password2: {
       type: String,
       minlength: 6,
+    },
+    avatar: {
+      public_id: {
+        type: String,
+        required: true,
+      },
+      url: {
+        type: String,
+        required: true,      
+      },
+    },
+    driver_lc: {
+      public_id: {
+        type: String,
+
+      },
+      url: {
+        type: String,
+            
+      },
     },
     isHost: {
       type: String,
@@ -68,6 +97,7 @@ userSchema.methods.matchPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 userSchema.methods.getSignedJwtToken = function () {
+  console.log(process.env.JWT_SECRET);
   return jwt.sign(
     { id: this._id, isHost: this.isHost, isAdmin: this.isAdmin },
     process.env.JWT_SECRET,

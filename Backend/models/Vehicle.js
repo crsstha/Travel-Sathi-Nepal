@@ -5,6 +5,7 @@ const VehicleSchema = new Schema({
   host: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
+    required:true,
   },
   location: {
     type: String,
@@ -22,13 +23,16 @@ const VehicleSchema = new Schema({
   },
   odometer: {
     type: String,
-    minlength: 6,
+    minlength: 2,
   },
   transmission: {
     type: String,
     minlength: 6,
   },
-
+  vehicle_identification :{
+    type: String,
+    minlength: 6,
+  },
   vehicle_type: {
     type: String,
     minlength: 3,
@@ -37,16 +41,17 @@ const VehicleSchema = new Schema({
     type: String,
     minlength: 3,
   },
-
+  totalSeat: {
+    type: Number, 
+  },
   AdvanceNotice: {
     type: String,
-    minlength: 3,
+    minlength: 1,
   },
   TripDuration: {
     type: String,
-    minlength: 3,
+    minlength: 1,
   },
-
   LicensePlate: {
     type: String,
     minlength: 3,
@@ -64,12 +69,13 @@ const VehicleSchema = new Schema({
     minlength: 3,
   },
   min_price: {
-    type: String,
+    type: Number,
     minlength: 3,
   },
-  max_price: {
+  avaiablity:{
     type: String,
     minlength: 3,
+    default: "Avaiable",
   },
   images: [
     {
@@ -88,7 +94,7 @@ const VehicleSchema = new Schema({
   },
   numOfReviews: {
     type: Number,
-    defaulf: 0,
+    default: 0,
   },
   reviews: [
     {
@@ -96,6 +102,7 @@ const VehicleSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
         required: true,
+        
       },
       name: {
         type: String,
@@ -112,6 +119,10 @@ const VehicleSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  endAt: {
+    type: Date,
+  }
+  
 });
-const vehicle = mongoose.model("vehicle", VehicleSchema);
+const vehicle = mongoose.model("Vehicle", VehicleSchema);
 module.exports = vehicle;

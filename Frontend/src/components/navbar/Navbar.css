@@ -5,9 +5,19 @@
   grid-template-columns: 7rem 1fr 2fr 1fr 10rem;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+    z-index: 2;
 }
-.navbar img {
+.usermenu img {
   height: 50px;
+}
+.navbar-brand img{
+  width: 200px;
+  height: 150px;
+  position: absolute;
+  top: -30px;
+  right: -23px;
+  font-size: 18px;
+  margin: 0;
 }
 .nav-list ul {
   padding-top: 15px;
@@ -22,6 +32,7 @@
   justify-content: start;
   align-items: center;
 }
+
 .navbar-profile {
   display: flex;
   justify-content: right;
@@ -34,6 +45,44 @@
   align-items: center;
 }
 
+.menu {
+  background: #ffffff;
+  border-radius: 8px;
+  position: absolute;
+  top: 60px;
+  right: 0;
+  width: 300px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-20px);
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+  z-index: 1;
+}
+
+.menu.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu li {
+  border-bottom: 1px solid #dddddd;
+}
+
+.menu li a {
+  text-decoration: none;
+  color: #333333;
+  padding: 15px 20px;
+  display: block;
+  
+}
 .menu-trigger {
   background: #ffffff;
   border-radius: 90px;
@@ -46,7 +95,6 @@
   border: none;
   vertical-align: middle;
   transition: box-shadow 0.4s ease;
-  margin-left: auto; /* Strictly for positioning */
 }
 
 .menu-trigger:hover {
@@ -62,45 +110,6 @@
 
 .menu-trigger img {
   border-radius: 90px;
-}
-.menu {
-  background: #ffffff;
-  border-radius: 8px;
-  position: absolute;
-  top: 60px;
-  right: 0;
-  width: 300px;
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-20px);
-  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
-}
-
-.menu.active {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-  height: fit-content;
-}
-
-.menu ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.menu li {
-  border-bottom: 1px solid #dddddd;
-  height: 35px;
-  padding: 5px;
-}
-
-.menu li Link {
-  text-decoration: none;
-  color: #333333;
-  padding: 15px 20px;
-  display: block;
 }
 .btn-1 {
   border: none;
@@ -132,9 +141,118 @@
 .btn-1:hover::before {
   width: 100%;
 }
+.hamburger-menu{
+  display: none;
+}
+
 @media (max-width: 1080px) {
-  .navbar {
-    height: 40px;
-    grid-template-columns: 2rem 3fr 1fr 2rem;
+  .main-nav {
+    height: 8rem;
+    grid-template-columns: 2rem 3fr 3fr 1fr 2rem;
+  }
+
+  .logo,
+  .menu-link ul,
+  .social-media ul {
+    height: 8rem;
   }
 }
+
+/* responsive css style  */
+@media (max-width: 998px) {
+  .navbar {
+    height: 7rem;
+    grid-template-columns: 2rem 2fr 3fr 2rem 2rem;
+  }
+
+  .nav-list {
+    display: none;
+  }
+
+  .logo{
+    height: 7rem;
+  }
+
+  .mobile-menu-link {
+    grid-column: 2/4;
+    position: relative;
+    z-index: 99;
+  }
+
+  .mobile-menu-link {
+    background-color: white;
+    height: 20rem;
+    display: grid;
+    grid-column: 2/5;
+    align-items: center;
+    padding-left: 3rem;
+    transition: all 2s linear;
+    transform-origin: top;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+      rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+  }
+
+  .mobile-menu-link ul {
+    height: 20rem;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .mobile-menu-link ul li:first-child {
+    transition-delay: 0.2s;
+  }
+
+  .hamburger-menu {
+    display: block;
+    font-size: 1.5rem;
+    
+  }
+}
+
+@media (max-width: 798px) {
+  .navbar {
+    height: 6rem;
+    grid-template-columns: 1rem 2fr 1fr 1fr 1rem;
+  }
+
+  .logo,
+  .social-media ul {
+    height: 6rem;
+  }
+
+  
+
+  .hamburger-menu {
+    display: block;
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .navbar {
+    height: 6rem;
+    grid-template-columns: 1rem 4fr 1fr 1fr 1rem;
+  }
+
+  .logo {
+    height: 6rem;
+  }
+
+  .logo h2 {
+    font-size: 2rem;
+  }
+
+  .hamburger-menu {
+    display: block;
+    font-size: 1.5rem;
+  }
+
+  /* hero section  */
+
+  .hero-section h1 {
+    font-size: 3.8rem;
+  }
+}
+

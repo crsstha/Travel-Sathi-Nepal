@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const {
   verifyTokenAndHost,
-  verifyTokenAndAuthorization,
+  isAuthenticatedUser,
+  verifyTokenAndAdmin,
 } = require("../middleware/verifyToken");
 
 // Controllers
@@ -16,21 +17,23 @@ const {
   createVehicleReview,
   getVehicleReviews,
   deleteReview,
+  getAdminVehicles,
 } = require("../controllers/vehicle");
-router.route("/add").post(verifyTokenAndHost, addVehicle);
+router.route("/add").post(isAuthenticatedUser,verifyTokenAndHost, addVehicle);
 router.route("/vehicles").get(getAllVehicle);
-router.route("/host/vehicles").get(verifyTokenAndHost, getHostVehicles);
+router.route("/host/vehicles").get(isAuthenticatedUser,verifyTokenAndHost, getHostVehicles);
+router.route("/admin/vehicles").get(isAuthenticatedUser,verifyTokenAndHost, verifyTokenAndAdmin, getAdminVehicles);
 router.route("/vehicle/:id").get(getvehicleDetails);
 router
   .route("/host/vehicle/:id")
-  .put(verifyTokenAndHost, updateVehicle)
-  .delete(verifyTokenAndHost, deleteVehicle);
+  .put(isAuthenticatedUser,verifyTokenAndHost, updateVehicle)
+  .delete(isAuthenticatedUser,verifyTokenAndHost, deleteVehicle);
 
-router.route("/review").put(verifyTokenAndAuthorization, createVehicleReview);
+router.route("/review").put(isAuthenticatedUser, createVehicleReview);
 
 router
   .route("/reviews")
   .get(getVehicleReviews)
-  .delete(verifyTokenAndAuthorization, deleteReview);
+  .delete(isAuthenticatedUser, deleteReview);
 
 module.exports = router;

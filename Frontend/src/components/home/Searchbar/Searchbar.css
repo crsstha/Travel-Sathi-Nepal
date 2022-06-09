@@ -5,10 +5,11 @@
   gap: 1rem;
   bottom: 0.5rem;
   position: relative;
-  background: white;
+  background: whitesmoke;
   padding: 20px;
   text-align: left;
   border-radius: 0.5rem;
+
 }
 .input-box {
   flex: 1 1 7rem;
